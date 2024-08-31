@@ -49,9 +49,13 @@ Follow these steps to get your development environment running:
 
 ## Running the Application
 
-**To run the application locally:**
+**To run the application locally on build mode:**
 
+      npm run build
       npm start
+
+**To run the application locally on dev mode:**
+npm run dev
 
 This will compile the TypeScript files and start the server on the port specified in your .env file (default is 3000). You can access the API at http://localhost:3000.
 
@@ -62,7 +66,11 @@ The server has the following endpoints:
 - **GET /api/items:**
   - Fetches item data from the Skinport API and returns it with additional fields for tradable and non-tradable minimum prices. Caching is implemented to improve performance.
 - **POST /api/users/deduct:**
+
   - Deducts a specified amount from a user's balance. Body parameters required are userId (integer) and amount (decimal).
+
+- **GET /cached-items:**
+  - To check cached data
 
 ## Database Setup
 
