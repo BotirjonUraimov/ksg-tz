@@ -1,22 +1,43 @@
-import express from "express";
-import dotenv from "dotenv";
-
-dotenv.config();
+const express = require("express");
+const EventEmitter = require("events");
+const axios = require("axios");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = 3000;
+const eventEmitter = new EventEmitter();
 
-app.use(express.json());
+let previousData: any = null; // Stores the previous data for comparison
 
-// Routes
-import itemsRoute from "./routers/itemsRoute";
-import usersRoute from "./routers/usersRoute";
+// Event listener for data change
+// eventEmitter.on("dataChanged", () => {
+//   console.log("Data changed!");
+// });
 
-app.use("/api/items", itemsRoute);
-app.use("/api/users", usersRoute);
+// Function to fetch data from the API
+const fetchData = async () => {
+  try {
+    const response = await axios.get("https://api.waxpeer.com/v1/prices");
+    const newData = response.data;
+
+    // Compare the new data with the previous data
+    if (JSON.stringify(newData) !== JSON.stringify(previousData)) {
+      // If the data is different, emit the 'dataChanged' event
+      eventEmitter.emit("dataChanged", newData);
+      console.log("data changed");
+    }
+
+    // Update the previous data for the next comparison
+    previousData = newData;
+  } catch (error: any) {
+    console.error("Error fetching data:", error.message);
+  }
+};
+
+// Start fetching the data every 10 seconds
+setInterval(fetchData, 10000);
+
+export default eventEmitter;
 
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server is running on port ${port}`);
 });
-
-export default app;

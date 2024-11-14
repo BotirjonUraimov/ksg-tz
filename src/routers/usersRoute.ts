@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import { Pool } from "pg";
 import dotenv from "dotenv";
+import eventEmitter from "app";
 
 dotenv.config();
 
@@ -68,6 +69,10 @@ router.post("/deduct", async (req, res) => {
       .status(500)
       .json({ message: "An error occurred while processing the transaction." });
   }
+});
+
+eventEmitter.on("dataChanged", () => {
+  console.log("Data changed!");
 });
 
 export default router;

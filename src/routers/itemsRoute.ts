@@ -4,15 +4,14 @@ import NodeCache from "node-cache";
 
 // Create an Axios instance to set default parameters and improve manageability
 const axiosInstance = axios.create({
-  baseURL: "https://api.skinport.com/v1/items",
-  params: { app_id: 730, currency: "EUR" },
+  baseURL: "https://api.waxpeer.com/v1/prices",
   timeout: 20000, // example of setting a longer timeout if needed
 });
 
 const router = express.Router();
 const cache = new NodeCache({ stdTTL: 600 });
 
-interface Item {
+export interface Item {
   market_hash_name: string;
   currency: string;
   tradable_min_price?: number | null;
@@ -32,7 +31,6 @@ interface Item {
 router.get("/", async (req: Request, res: Response) => {
   const cacheKey = "skinport_items";
   const cachedData: Item[] | undefined = cache.get<Item[]>(cacheKey);
-
   if (cachedData) {
     return res.json(cachedData);
   }
